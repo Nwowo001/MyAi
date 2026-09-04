@@ -1,0 +1,13 @@
+# AutoAgent — pnpm Workspace Configuration
+#
+# All directories listed here are treated as pnpm workspace packages.
+# Each must contain its own package.json.
+#
+# Dependency resolution:
+#   - Packages within the workspace can reference each other using
+#     the "workspace:*" protocol in their package.json dependencies.
+#   - Example: "@autoagent/shared": "workspace:*"
+
+packages:
+  - "apps/*"
+  - "packages/*"
