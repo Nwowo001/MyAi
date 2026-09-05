@@ -14,6 +14,8 @@ export const CreateOfferingSchema = z.object({
   description: z.string().max(2000).trim().optional().nullable(),
   price: z.number().min(0, 'Price must be 0 or greater'),
   currency: z.string().max(10).optional(),
+  imageUrl: z.string().optional().nullable(),
+  specifications: z.record(z.string(), z.string()).optional().nullable(),
   durationMinutes: z
     .number()
     .int()

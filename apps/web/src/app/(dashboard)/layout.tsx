@@ -20,6 +20,8 @@ import {
   User,
 } from 'lucide-react';
 
+import { fetchUserBusinesses } from '@/lib/api/business';
+
 const NAV_ITEMS = [
   { href: '/overview', label: 'Overview', icon: LayoutDashboard },
   { href: '/catalog', label: 'Catalog', icon: Package },
@@ -37,10 +39,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
-  const activeBusiness = useBusinessStore((s) => s.activeBusiness);
+  const { activeBusiness, setBusinesses } = useBusinessStore();
 
   useEffect(() => {
-    async function loadUser() {
+    async function loadData() {
       const supabase = createClient();
       const {
         data: { session },
@@ -48,9 +50,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       if (session?.user?.email) {
         setUserEmail(session.user.email);
       }
+
+      try {
+        const businesses = await fetchUserBusinesses();
+        if (businesses && businesses.length > 0) {
+          setBusinesses(businesses);
+        }
+      } catch (err) {
+        console.error('Failed to load businesses:', err);
+      }
     }
-    loadUser();
-  }, []);
+    loadData();
+  }, [setBusinesses]);
 
   const handleLogout = async () => {
     const supabase = createClient();

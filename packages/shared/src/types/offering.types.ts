@@ -25,6 +25,10 @@ export interface Offering {
   price: number;
   /** ISO 4217 currency code — inherited from business.currency */
   currency: string;
+  /** Primary product/service image URL */
+  imageUrl: string | null;
+  /** Structured key-value specifications e.g. Color, Size, Brand, Material */
+  specifications: Record<string, string> | null;
   /** Duration in minutes (for appointments/services only) */
   durationMinutes: number | null;
   /** Stock keeping unit identifier (products only) */
@@ -43,6 +47,8 @@ export interface CreateOfferingInput {
   description?: string | null;
   price: number;
   currency?: string;
+  imageUrl?: string | null;
+  specifications?: Record<string, string> | null;
   durationMinutes?: number | null;
   sku?: string | null;
   stockQuantity?: number | null;

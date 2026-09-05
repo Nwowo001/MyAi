@@ -24,6 +24,12 @@ import {
 } from '@autoagent/validation';
 import { offeringRouter } from './offering.routes.js';
 import { customerRouter } from './customer.routes.js';
+import { conversationRouter } from './conversation.routes.js';
+import {
+  connectWhatsApp,
+  getWhatsAppStatus,
+  disconnectWhatsApp,
+} from '../controllers/whatsappConnect.controller.js';
 
 const router = Router();
 
@@ -49,5 +55,12 @@ router.delete('/:businessId/members/:memberId', requireTenant, removeMember);
 router.use('/:businessId/offerings', offeringRouter);
 // Customers & Leads are nested under a business
 router.use('/:businessId/customers', customerRouter);
+// Conversations inbox nested under a business
+router.use('/:businessId/conversations', conversationRouter);
+
+// ── WhatsApp Connect (Embedded Signup OAuth) ──────────────────────────────────
+router.post('/:businessId/whatsapp/connect', requireTenant, connectWhatsApp);
+router.get('/:businessId/whatsapp/status', requireTenant, getWhatsAppStatus);
+router.delete('/:businessId/whatsapp/disconnect', requireTenant, disconnectWhatsApp);
 
 export { router as businessRouter };

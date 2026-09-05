@@ -210,6 +210,20 @@ export class CustomerRepository {
     });
     return true;
   }
+
+  async findByPhone(businessId: string, phone: string): Promise<Customer | null> {
+    const customer = await prisma.customer.findFirst({
+      where: { businessId, phone },
+      include: {
+        leads: {
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
+      },
+    });
+    return customer ? mapPrismaCustomer(customer) : null;
+  }
 }
 
 export const customerRepository = new CustomerRepository();
+

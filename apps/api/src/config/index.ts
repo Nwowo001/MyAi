@@ -37,12 +37,12 @@ const envSchema = z.object({
   AI_MAX_TOKENS: z.coerce.number().int().positive().default(1024),
   AI_TEMPERATURE: z.coerce.number().min(0).max(2).default(0.7),
 
-  // WhatsApp
-  WHATSAPP_ACCESS_TOKEN: z.string().optional(),
-  WHATSAPP_VERIFY_TOKEN: z.string().optional(),
-  WHATSAPP_PHONE_NUMBER_ID: z.string().optional(),
-  WHATSAPP_APP_SECRET: z.string().optional(),
-  WHATSAPP_API_VERSION: z.string().default('v20.0'),
+  // Meta / WhatsApp Platform (YOUR app credentials — shared across all tenants)
+  META_APP_ID: z.string().min(1, 'META_APP_ID is required for WhatsApp Embedded Signup'),
+  META_APP_SECRET: z.string().min(1, 'META_APP_SECRET is required'),
+  // A single verify token YOU control, used to validate Meta's webhook calls to your server
+  META_WEBHOOK_VERIFY_TOKEN: z.string().default('autoagent_webhook_verify'),
+  META_API_VERSION: z.string().default('v21.0'),
 
   // Paystack
   PAYSTACK_SECRET_KEY: z.string().optional(),

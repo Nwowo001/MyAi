@@ -17,6 +17,8 @@ function mapOffering(record: {
   type: string;
   price: { toString(): string };
   currency: string;
+  imageUrl?: string | null;
+  specifications?: unknown;
   durationMinutes: number | null;
   sku: string | null;
   stockQuantity: number | null;
@@ -32,6 +34,8 @@ function mapOffering(record: {
     type: record.type as 'PRODUCT' | 'SERVICE',
     price: parseFloat(record.price.toString()),
     currency: record.currency,
+    imageUrl: record.imageUrl ?? null,
+    specifications: (record.specifications as Record<string, string>) ?? null,
     durationMinutes: record.durationMinutes,
     sku: record.sku,
     stockQuantity: record.stockQuantity,
@@ -56,6 +60,8 @@ export class OfferingRepository {
         type: input.type,
         price: input.price,
         currency: input.currency ?? 'NGN',
+        imageUrl: input.imageUrl ?? null,
+        specifications: input.specifications ?? undefined,
         durationMinutes: input.durationMinutes ?? null,
         sku: input.sku ?? null,
         stockQuantity: input.stockQuantity ?? null,
@@ -105,6 +111,8 @@ export class OfferingRepository {
           ...(input.description !== undefined && { description: input.description }),
           ...(input.price !== undefined && { price: input.price }),
           ...(input.currency !== undefined && { currency: input.currency }),
+          ...(input.imageUrl !== undefined && { imageUrl: input.imageUrl }),
+          ...(input.specifications !== undefined && { specifications: input.specifications }),
           ...(input.durationMinutes !== undefined && { durationMinutes: input.durationMinutes }),
           ...(input.sku !== undefined && { sku: input.sku }),
           ...(input.stockQuantity !== undefined && { stockQuantity: input.stockQuantity }),
