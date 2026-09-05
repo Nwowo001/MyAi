@@ -5,22 +5,17 @@
  * accessed through a verified tenant context.
  *
  * This middleware:
- * 1. Reads the businessId from the route parameter (`:businessId`).
+ * 1. Reads the businessId from route parameters (`:businessId`) or `X-Business-ID` header.
  * 2. Verifies the authenticated user is a member of that business.
  * 3. Attaches the verified tenant context to `req.tenant`.
  *
  * SECURITY:
- * - This prevents IDOR (Insecure Direct Object Reference) attacks.
- * - A user cannot access another business's data by guessing a businessId.
- * - All business-scoped routes should use this middleware.
- *
- * Usage:
- * ```ts
- * router.get('/:businessId/conversations', requireAuth, requireTenant, handler);
- * ```
+ * - Prevents IDOR (Insecure Direct Object Reference) data leakage.
+ * - Enforces multi-tenant data boundary at the HTTP boundary.
  */
 
 import type { Request, Response, NextFunction } from 'express';
+import { businessService } from '../services/business.service.js';
 import { sendError } from '../utils/apiResponse.js';
 import { logger } from '../utils/logger.js';
 import { HTTP_STATUS } from '@autoagent/config';
@@ -50,11 +45,7 @@ declare global {
  *
  * Expects:
  * - `req.auth` to be set by `requireAuth` middleware.
- * - `req.params.businessId` to be present in the route.
- *
- * NOTE: This is a stub implementation for Phase 1.
- * The full implementation (database query) will be added in Phase 3 when
- * Prisma is configured and the BusinessMember table exists.
+ * - `req.params.businessId` or `X-Business-ID` header.
  */
 export async function requireTenant(
   req: Request,
@@ -66,38 +57,33 @@ export async function requireTenant(
     return;
   }
 
-  const businessId = req.params['businessId'];
+  const businessId =
+    req.params['businessId'] || (req.headers['x-business-id'] as string | undefined);
 
   if (!businessId) {
-    sendError(res, 'BAD_REQUEST', 'businessId is required', HTTP_STATUS.BAD_REQUEST);
+    sendError(res, 'BAD_REQUEST', 'businessId is required in route params or X-Business-ID header', HTTP_STATUS.BAD_REQUEST);
     return;
   }
 
   try {
-    // TODO (Phase 3): Replace this stub with a real database query:
-    //
-    // const member = await prisma.businessMember.findFirst({
-    //   where: { businessId, userId: req.auth.userId },
-    //   select: { role: true, permissions: true },
-    // });
-    //
-    // if (!member) {
-    //   return sendError(res, 'FORBIDDEN', 'Access denied', HTTP_STATUS.FORBIDDEN);
-    // }
-    //
-    // req.tenant = { businessId, role: member.role, permissions: member.permissions };
+    const member = await businessService.verifyUserMembership(businessId, req.auth.userId);
 
-    // Phase 1 stub — attach minimal tenant context
+    if (!member) {
+      logger.warn({ userId: req.auth.userId, businessId }, 'Access denied — User is not a member of this business');
+      sendError(res, 'FORBIDDEN', 'Access denied to target business context', HTTP_STATUS.FORBIDDEN);
+      return;
+    }
+
     req.tenant = {
       businessId,
-      role: 'OWNER', // placeholder
-      permissions: [],
+      role: member.role,
+      permissions: member.permissions,
     };
 
-    logger.debug({ userId: req.auth.userId, businessId }, 'Tenant context attached');
+    logger.debug({ userId: req.auth.userId, businessId, role: member.role }, 'Tenant context verified');
     next();
   } catch (err) {
     logger.error({ err, businessId }, 'Tenant verification failed');
-    sendError(res, 'INTERNAL_ERROR', 'Tenant verification failed', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+    sendError(res, 'INTERNAL_ERROR', 'Tenant verification error', HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 }

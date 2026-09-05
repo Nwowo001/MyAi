@@ -36,14 +36,15 @@ import { healthRouter } from './health.routes.js';
 // import { aiRouter } from './ai.routes.js';
 // import { webhookRouter } from './webhook.routes.js';
 
+import { businessRouter } from './business.routes.js';
+
 const router = Router();
 
 // ── Unauthenticated routes ────────────────────────────────────────────────────
 router.use('/health', healthRouter);
 
 // ── API routes (authenticated) ────────────────────────────────────────────────
-// Uncomment as each phase is implemented:
-// router.use('/api/businesses', businessRouter);
+router.use('/businesses', businessRouter);
 // router.use('/api/offerings', offeringRouter);
 // router.use('/api/customers', customerRouter);
 // router.use('/api/conversations', conversationRouter);

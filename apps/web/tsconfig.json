@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": ".",
+    "baseUrl": ".",
     "target": "ES2022",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -21,10 +22,10 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@autoagent/shared": ["../../packages/shared/src/index.ts"],
-      "@autoagent/validation": ["../../packages/validation/src/index.ts"],
-      "@autoagent/config": ["../../packages/config/src/index.ts"]
+      "@/*": ["./src/*", "../../apps/web/src/*"],
+      "@autoagent/shared": ["../../packages/shared/dist/index.d.ts", "../../packages/shared/src/index.ts"],
+      "@autoagent/validation": ["../../packages/validation/dist/index.d.ts", "../../packages/validation/src/index.ts"],
+      "@autoagent/config": ["../../packages/config/dist/index.d.ts", "../../packages/config/src/index.ts"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

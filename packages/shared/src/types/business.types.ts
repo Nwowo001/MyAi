@@ -81,3 +81,27 @@ export interface SocialAccount {
 }
 
 export type SocialAccountStatus = 'CONNECTED' | 'DISCONNECTED' | 'ERROR' | 'PENDING';
+
+/** User profile associated with Supabase auth.users.id */
+export interface UserProfile {
+  id: string;
+  email: string;
+  fullName: string | null;
+  avatarUrl: string | null;
+  phone: string | null;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Data required to invite a team member to a business. */
+export interface InviteMemberInput {
+  email: string;
+  role: 'ADMIN' | 'AGENT';
+}
+
+/** Data required to update a member's role. */
+export interface UpdateMemberRoleInput {
+  role: 'OWNER' | 'ADMIN' | 'AGENT';
+}
+

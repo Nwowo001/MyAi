@@ -25,7 +25,8 @@ const envSchema = z.object({
   DATABASE_URL: z.string().url('DATABASE_URL must be a valid URL'),
   DIRECT_URL: z.string().url('DIRECT_URL must be a valid URL').optional(),
 
-  // Supabase — backend only, never NEXT_PUBLIC_
+  // Supabase — backend only
+  SUPABASE_URL: z.string().url().default('https://your-project-ref.supabase.co'),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1, 'SUPABASE_SERVICE_ROLE_KEY is required'),
   SUPABASE_JWT_SECRET: z.string().min(1, 'SUPABASE_JWT_SECRET is required'),
 

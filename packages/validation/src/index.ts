@@ -2,24 +2,20 @@
  * @fileoverview Public API of the @autoagent/validation package.
  *
  * Import schemas from '@autoagent/validation' on both frontend and backend.
- *
- * @example
- * // Backend: validate request body
- * import { CreateBusinessSchema } from '@autoagent/validation';
- * const result = CreateBusinessSchema.safeParse(req.body);
- *
- * @example
- * // Frontend: React Hook Form + Zod resolver
- * import { CreateBusinessSchema } from '@autoagent/validation';
- * const form = useForm({ resolver: zodResolver(CreateBusinessSchema) });
  */
 
 export {
-  CurrencyCodeSchema,
   CreateBusinessSchema,
   UpdateBusinessSchema,
+  InviteMemberSchema,
+  UpdateMemberRoleSchema,
 } from './business.schema';
-export type { CreateBusinessInput, UpdateBusinessInput } from './business.schema';
+export type {
+  CreateBusinessSchemaType,
+  UpdateBusinessSchemaType,
+  InviteMemberSchemaType,
+  UpdateMemberRoleSchemaType,
+} from './business.schema';
 
 export { CreateOfferingSchema, UpdateOfferingSchema } from './offering.schema';
 export type { CreateOfferingInput, UpdateOfferingInput } from './offering.schema';

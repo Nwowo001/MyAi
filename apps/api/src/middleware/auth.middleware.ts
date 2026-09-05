@@ -10,14 +10,14 @@
  * ```
  *
  * SECURITY:
- * - Tokens are verified using the Supabase JWT secret — not trusting the client.
+ * - Tokens are verified using Supabase Auth admin SDK — not trusting the client.
  * - The user's `sub` (UUID) is extracted from the verified token payload.
  * - No database call is made here; use subsequent middleware for business membership checks.
  */
 
 import type { Request, Response, NextFunction } from 'express';
 import { createClient } from '@supabase/supabase-js';
-import { env } from '../config/index.js';
+import { env, isDevelopment } from '../config/index.js';
 import { sendError } from '../utils/apiResponse.js';
 import { logger } from '../utils/logger.js';
 import { HTTP_STATUS } from '@autoagent/config';
@@ -44,7 +44,7 @@ declare global {
 
 // Supabase admin client — used for JWT verification
 const supabaseAdmin = createClient(
-  `https://${env.SUPABASE_JWT_SECRET.substring(0, 20)}.supabase.co`, // placeholder URL
+  env.SUPABASE_URL,
   env.SUPABASE_SERVICE_ROLE_KEY,
   { auth: { persistSession: false } },
 );
@@ -66,6 +66,17 @@ export async function requireAuth(
   }
 
   const token = authHeader.substring(7);
+
+  // Development mock bypass for testing before live Supabase credentials are input
+  if (isDevelopment && token.startsWith('dev-mock-token-')) {
+    const mockUserId = token.replace('dev-mock-token-', '') || 'usr_dev_owner_001';
+    req.auth = {
+      userId: mockUserId,
+      email: `${mockUserId}@autoagent.dev`,
+    };
+    next();
+    return;
+  }
 
   try {
     const { data, error } = await supabaseAdmin.auth.getUser(token);
@@ -91,7 +102,6 @@ export async function requireAuth(
 /**
  * Middleware: Optionally authenticate.
  * Attaches auth context if a token is present but does not reject if absent.
- * Use on routes that behave differently for authenticated vs. anonymous users.
  */
 export async function optionalAuth(
   req: Request,
@@ -106,6 +116,16 @@ export async function optionalAuth(
   }
 
   const token = authHeader.substring(7);
+
+  if (isDevelopment && token.startsWith('dev-mock-token-')) {
+    const mockUserId = token.replace('dev-mock-token-', '') || 'usr_dev_owner_001';
+    req.auth = {
+      userId: mockUserId,
+      email: `${mockUserId}@autoagent.dev`,
+    };
+    next();
+    return;
+  }
 
   try {
     const { data } = await supabaseAdmin.auth.getUser(token);

@@ -6,9 +6,9 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "paths": {
-      "@autoagent/shared": ["../../packages/shared/src/index.ts"],
-      "@autoagent/validation": ["../../packages/validation/src/index.ts"],
-      "@autoagent/config": ["../../packages/config/src/index.ts"]
+      "@autoagent/shared": ["../../packages/shared/dist/index.d.ts", "../../packages/shared/src/index.ts"],
+      "@autoagent/validation": ["../../packages/validation/dist/index.d.ts", "../../packages/validation/src/index.ts"],
+      "@autoagent/config": ["../../packages/config/dist/index.d.ts", "../../packages/config/src/index.ts"]
     }
   },
   "include": ["src/**/*"],

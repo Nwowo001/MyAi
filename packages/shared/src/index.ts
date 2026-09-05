@@ -49,6 +49,9 @@ export type {
   BusinessMember,
   SocialAccount,
   SocialAccountStatus,
+  InviteMemberInput,
+  UpdateMemberRoleInput,
+  UserProfile,
 } from './types/business.types';
 
 export type {
