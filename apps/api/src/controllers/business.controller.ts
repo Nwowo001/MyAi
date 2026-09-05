@@ -10,13 +10,14 @@ import type { CreateBusinessInput, UpdateBusinessInput, InviteMemberInput, Updat
 
 export async function createBusiness(req: Request, res: Response): Promise<void> {
   const userId = req.auth?.userId;
+  const ownerEmail = req.auth?.email ?? '';
   if (!userId) {
     sendError(res, 'UNAUTHORIZED', 'Authentication required', HTTP_STATUS.UNAUTHORIZED);
     return;
   }
 
   const input = req.body as CreateBusinessInput;
-  const result = await businessService.createBusiness(userId, input);
+  const result = await businessService.createBusiness(userId, ownerEmail, input);
 
   sendSuccess(res, result, undefined, HTTP_STATUS.CREATED);
 }

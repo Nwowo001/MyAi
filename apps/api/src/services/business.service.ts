@@ -11,8 +11,12 @@ export class BusinessService {
   /**
    * Create a new tenant business profile for a user.
    */
-  async createBusiness(userId: string, input: CreateBusinessInput): Promise<{ business: Business; member: BusinessMember }> {
-    return businessRepository.create(userId, input);
+  async createBusiness(
+    userId: string,
+    ownerEmail: string,
+    input: CreateBusinessInput,
+  ): Promise<{ business: Business; member: BusinessMember }> {
+    return businessRepository.create(userId, ownerEmail, input);
   }
 
   /**
