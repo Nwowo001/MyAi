@@ -48,7 +48,7 @@ export default function Home() {
                 Sign In
               </Link>
               <Link
-                href="/onboarding"
+                href="/register"
                 className="px-5 py-2 text-sm font-semibold rounded-lg bg-[#10B981] hover:bg-[#059669] text-white transition-all shadow-sm"
               >
                 Get Started
@@ -112,7 +112,7 @@ export default function Home() {
                 Sign In
               </Link>
               <Link
-                href="/onboarding"
+                href="/register"
                 onClick={() => setMobileMenuOpen(false)}
                 className="w-full text-center py-2.5 text-sm font-semibold text-white bg-[#10B981] hover:bg-[#059669] rounded-lg transition-colors"
               >
@@ -141,16 +141,16 @@ export default function Home() {
 
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 max-w-md mx-auto sm:max-w-none">
             <Link
-              href="/dashboard"
+              href="/register"
               className="w-full sm:w-auto px-7 py-3.5 text-base font-semibold rounded-lg bg-[#10B981] hover:bg-[#059669] text-white shadow-md transition-all text-center"
             >
-              Explore Dashboard
+              Get Started
             </Link>
             <Link
-              href="/onboarding"
+              href="/login"
               className="w-full sm:w-auto px-7 py-3.5 text-base font-semibold rounded-lg bg-[#F8FAFC] hover:bg-slate-100 text-[#0F172A] border border-slate-300 transition-all text-center"
             >
-              Start Free Trial
+              Sign In
             </Link>
           </div>
         </section>

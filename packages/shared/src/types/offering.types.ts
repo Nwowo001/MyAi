@@ -2,54 +2,54 @@
  * @fileoverview Offering, booking, and order domain types.
  *
  * The Offering is the core commercial entity. Everything the business sells
- * is an Offering, regardless of whether it is a product, service, appointment,
- * package, or subscription.
+ * is an Offering, regardless of whether it is a product or service.
  */
 
-import type { OfferingType } from '../enums/offeringType.enum';
 import type { BookingStatus } from '../enums/bookingStatus.enum';
 import type { OrderStatus } from '../enums/orderStatus.enum';
 
 /**
- * An offering is anything a business sells or provides.
+ * An offering is anything a business sells or provides (product or service).
  *
  * Currency uses ISO 4217 codes and is inherited from the business settings.
- * Price is stored as a number in the smallest relevant unit (e.g. kobo for NGN).
+ * Price is stored as a decimal number (e.g. 5000.00 for ₦5,000).
  */
 export interface Offering {
   id: string;
   businessId: string;
-  type: OfferingType;
+  /** PRODUCT | SERVICE */
+  type: 'PRODUCT' | 'SERVICE';
   name: string;
   description: string | null;
-  /** Price in the business's configured currency units */
-  price: number | null;
+  /** Price in the business's configured currency */
+  price: number;
   /** ISO 4217 currency code — inherited from business.currency */
   currency: string;
-  /** Duration in minutes (for appointments/services) */
-  duration: number | null;
-  /** Availability config (JSON, structure depends on offering type) */
-  availability: Record<string, unknown> | null;
-  active: boolean;
-  /** Additional metadata specific to the offering type */
-  metadata: Record<string, unknown>;
+  /** Duration in minutes (for appointments/services only) */
+  durationMinutes: number | null;
+  /** Stock keeping unit identifier (products only) */
+  sku: string | null;
+  /** Available inventory count (products only) */
+  stockQuantity: number | null;
+  /** Whether this offering is visible and bookable */
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface CreateOfferingInput {
-  type: OfferingType;
+  type: 'PRODUCT' | 'SERVICE';
   name: string;
-  description?: string;
-  price?: number;
-  duration?: number;
-  availability?: Record<string, unknown>;
-  metadata?: Record<string, unknown>;
+  description?: string | null;
+  price: number;
+  currency?: string;
+  durationMinutes?: number | null;
+  sku?: string | null;
+  stockQuantity?: number | null;
+  isActive?: boolean;
 }
 
-export type UpdateOfferingInput = Partial<CreateOfferingInput> & {
-  active?: boolean;
-};
+export type UpdateOfferingInput = Partial<Omit<CreateOfferingInput, 'type'>>;
 
 /**
  * A booking for a service, appointment, or event.
@@ -59,12 +59,10 @@ export interface Booking {
   businessId: string;
   customerId: string;
   offeringId: string;
-  assignedUserId: string | null;
   startTime: string;
-  endTime: string | null;
+  endTime: string;
   status: BookingStatus;
   notes: string | null;
-  metadata: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
   offering?: Pick<Offering, 'id' | 'name' | 'type' | 'price' | 'currency'>;
@@ -80,6 +78,7 @@ export interface Order {
   status: OrderStatus;
   totalAmount: number;
   currency: string;
+  paymentLink: string | null;
   createdAt: string;
   updatedAt: string;
   items?: OrderItem[];
@@ -91,7 +90,6 @@ export interface OrderItem {
   offeringId: string;
   quantity: number;
   unitPrice: number;
-  totalPrice: number;
   offering?: Pick<Offering, 'id' | 'name' | 'type'>;
 }
 

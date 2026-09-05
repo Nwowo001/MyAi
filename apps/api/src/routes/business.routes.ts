@@ -22,6 +22,8 @@ import {
   InviteMemberSchema,
   UpdateMemberRoleSchema,
 } from '@autoagent/validation';
+import { offeringRouter } from './offering.routes.js';
+import { customerRouter } from './customer.routes.js';
 
 const router = Router();
 
@@ -41,5 +43,11 @@ router.get('/:businessId/members', requireTenant, listMembers);
 router.post('/:businessId/members', requireTenant, validate('body', InviteMemberSchema), inviteMember);
 router.patch('/:businessId/members/:memberId', requireTenant, validate('body', UpdateMemberRoleSchema), updateMemberRole);
 router.delete('/:businessId/members/:memberId', requireTenant, removeMember);
+
+// ── Nested resource routers ───────────────────────────────────────────────────
+// Offerings (Products & Services) are nested under a business
+router.use('/:businessId/offerings', offeringRouter);
+// Customers & Leads are nested under a business
+router.use('/:businessId/customers', customerRouter);
 
 export { router as businessRouter };

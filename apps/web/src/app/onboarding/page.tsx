@@ -59,7 +59,7 @@ export default function OnboardingPage() {
       };
 
       setActiveBusiness(mockCreatedBusiness);
-      router.push('/dashboard');
+      router.push('/overview');
     } catch {
       setLoading(false);
     }

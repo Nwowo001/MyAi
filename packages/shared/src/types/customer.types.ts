@@ -2,44 +2,51 @@
  * @fileoverview Customer and lead domain types.
  */
 
+import type { LeadStatus } from '../enums/leadStatus.enum';
+
+export type { LeadStatus };
+
 /**
  * A customer who has interacted with a business through AutoAgent.
  */
 export interface Customer {
   id: string;
   businessId: string;
-  name: string | null;
+  name: string;
   phone: string | null;
   email: string | null;
-  /** Flexible key-value store for additional customer data */
-  metadata: Record<string, unknown>;
+  notes: string | null;
+  tags: string[];
   createdAt: string;
   updatedAt: string;
+  latestLead?: Lead | null;
+  leads?: Lead[];
 }
 
 export interface CreateCustomerInput {
-  name?: string;
-  phone?: string;
-  email?: string;
-  metadata?: Record<string, unknown>;
+  name: string;
+  phone?: string | null;
+  email?: string | null;
+  notes?: string | null;
+  tags?: string[];
+  leadStatus?: LeadStatus;
+  budget?: number | null;
 }
 
 export type UpdateCustomerInput = Partial<CreateCustomerInput>;
 
 /**
  * A sales lead associated with a customer.
- * A customer may have multiple leads over time.
  */
 export interface Lead {
   id: string;
   businessId: string;
   customerId: string;
-  status: string;
-  source: string;
-  /** Structured data collected during AI qualification */
-  qualificationData: Record<string, unknown>;
-  score: number | null;
-  notes: string | null;
+  status: LeadStatus;
+  source: string | null;
+  score: number;
+  budget: number | null;
+  summary: string | null;
   createdAt: string;
   updatedAt: string;
   customer?: Customer;
